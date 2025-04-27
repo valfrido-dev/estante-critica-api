@@ -18,7 +18,7 @@ import java.util.Optional;
 @RequestMapping("/books")
 @RequiredArgsConstructor
 @Slf4j
-public class SearchBooksController {
+public class BooksController {
 
     private final BookService service;
 
@@ -35,7 +35,7 @@ public class SearchBooksController {
         List<Book> listSearchResponse = service.findByParams(title, author, category, publisher);
 
         if ( listSearchResponse.isEmpty() ) {
-            log.info("Nenhum livro localizado para os parametros informados!");
+            log.warn("Nenhum livro localizado para os parametros informados!");
             throw new ResourceNotFoundException("Nenhum livro localizado para os parametros informados!");
         }
 
@@ -47,7 +47,7 @@ public class SearchBooksController {
         Optional<Book> bookPovided = service.findById(bookId);
 
         if (bookPovided.isEmpty()) {
-            log.info("Livro não localizado! Identificador: {}", bookId);
+            log.warn("Livro não localizado! Identificador: {}", bookId);
             throw new ResourceNotFoundException("Livro não localizado!");
         }
 
