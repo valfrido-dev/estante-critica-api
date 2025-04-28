@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,32 +56,13 @@ public class BookService {
         return mongoTemplate.find(query, Book.class);
     }
 
-//    public List<Book> findByParams(String title, String author,
-//                                   String category, String publisher) {
-//       Example<Book> exampleSearch = this.getBookExampleSearch(title, author, category, publisher);
-//       Sort sortAverageRating = this.getSortedAverageRatingDesc();
-//        return repository.findAll(exampleSearch, sortAverageRating);
-//    }
-//
-//    private Example<Book> getBookExampleSearch(String title, String author, String category, String publisher) {
-//        Book bookSearch = new Book();
-//        bookSearch.setTitle(title);
-//        bookSearch.setAuthors(author != null ? List.of(author) : null);
-//        bookSearch.setCategory(category);
-//        bookSearch.setPublisher(publisher);
-//
-//        ExampleMatcher matcherNullable = ExampleMatcher.matching()
-//                .withIgnoreNullValues()
-//                .withMatcher("title", ExampleMatcher.GenericPropertyMatchers.contains())
-//                .withMatcher("authors", ExampleMatcher.GenericPropertyMatchers.contains())
-//                .withMatcher("category", ExampleMatcher.GenericPropertyMatchers.exact())
-//                .withMatcher("publisher", ExampleMatcher.GenericPropertyMatchers.contains());
-//
-//        return Example.of(bookSearch, matcherNullable);
-//    }
-
     public Optional<Book> findById(String id) {
         return repository.findById(id);
+    }
+
+    public void saveBook(Book book) {
+        book.setUpdateDate(LocalDateTime.now());
+        repository.save(book);
     }
 
     private Sort getSortedAverageRatingDesc() {

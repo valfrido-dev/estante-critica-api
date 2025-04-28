@@ -6,6 +6,8 @@ import com.personal.project.estante_critica_api.error.ApiErrorResponse;
 import io.jsonwebtoken.ClaimJwtException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import jakarta.servlet.ServletException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestControllerAdvice
+@Slf4j
 public class RestCustomExceptionHandler {
 
     @ExceptionHandler(Exception.class)
@@ -44,14 +47,6 @@ public class RestCustomExceptionHandler {
 
     @ExceptionHandler(UserValidationException.class)
     public ResponseEntity<ApiErrorResponse> requestNotValidException(RuntimeException ex) {
-        ApiErrorResponse apiError = new ApiErrorResponse(
-                LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.name(), List.of(ex.getMessage()));
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(ExpiredJwtException.class)
-    public ResponseEntity<ApiErrorResponse> jwtExceptions(ClaimJwtException ex) {
         ApiErrorResponse apiError = new ApiErrorResponse(
                 LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.name(), List.of(ex.getMessage()));

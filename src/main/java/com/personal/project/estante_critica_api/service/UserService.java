@@ -7,15 +7,18 @@ import com.personal.project.estante_critica_api.repository.UserRepository;
 import com.personal.project.estante_critica_api.service.validators.user.UserValidatorImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +29,7 @@ public class UserService implements UserDetailsService {
     private final List<UserValidatorImpl<NewUserDTO>> validatorsDTO;
     private final List<UserValidatorImpl<User>> validators;
 
+    @Transactional
     public User registerNewUser(NewUserDTO user) {
         validatorsDTO.forEach(v -> v.validator(user));
         String encriptedPass = this.encryptPassword(user.password());
@@ -48,12 +52,25 @@ public class UserService implements UserDetailsService {
         return repository.findAll();
     }
 
+    @Transactional
     public User alterRoleUser(String userId, Boolean userAdmin) {
         var optionalUser = repository.findById(userId);
         var user = optionalUser.orElseThrow(() -> new UserNotFoundException("Usuário não localizado!"));
         user.setAdmin(userAdmin);
         user.setUpdateDate(LocalDateTime.now());
         return repository.save(user);
+    }
+
+    public User getUserAutenticated() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if ( auth != null ) {
+            return (User) auth.getPrincipal();
+        }
+        return null;
+    }
+
+    public Optional<User> getUsrById(String userId) {
+        return repository.findById(userId);
     }
 
     private String encryptPassword(String password) {
