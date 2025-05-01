@@ -11,5 +11,6 @@ import java.util.List;
 public interface ReviewRepository extends MongoRepository<Review, String> {
 
     List<Review> findByBookId(String bookId);
+    Boolean existsByBookIdAndUserId(String bookId, String userId);
 
 }

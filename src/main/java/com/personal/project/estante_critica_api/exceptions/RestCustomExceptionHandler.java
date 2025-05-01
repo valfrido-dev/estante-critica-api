@@ -37,7 +37,10 @@ public class RestCustomExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ExceptionHandler({
+        UserAlreadyExistsException.class,
+        ReviewAlreadyExistsException.class
+    })
     public ResponseEntity<ApiErrorResponse> entityExistsException(RuntimeException ex) {
         ApiErrorResponse apiError = new ApiErrorResponse(
                 LocalDateTime.now(), HttpStatus.CONFLICT.value(),

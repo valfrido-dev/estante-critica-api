@@ -36,3 +36,6 @@ build/
 dokcer/data/**
 dokcer/data/db/
 dokcer/data/db/**/**
+
+#### Report coverage unit tests
+htmlReport/

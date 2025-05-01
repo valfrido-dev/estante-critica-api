@@ -61,12 +61,12 @@ public class UserService implements UserDetailsService {
         return repository.save(user);
     }
 
-    public User getUserAutenticated() {
+    public Optional<User> getUserAutenticated() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if ( auth != null ) {
-            return (User) auth.getPrincipal();
+            return Optional.of((User) auth.getPrincipal());
         }
-        return null;
+        return Optional.empty();
     }
 
     public Optional<User> getUsrById(String userId) {

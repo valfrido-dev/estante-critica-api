@@ -1,8 +1,8 @@
 package com.personal.project.estante_critica_api.service;
 
-import com.personal.project.estante_critica_api.endpoints.dto.review.NewReviewBookDTO;
 import com.personal.project.estante_critica_api.endpoints.dto.review.ReviewBookDTO;
 import com.personal.project.estante_critica_api.exceptions.ResourceNotFoundException;
+import com.personal.project.estante_critica_api.exceptions.ReviewAlreadyExistsException;
 import com.personal.project.estante_critica_api.exceptions.UserNotFoundException;
 import com.personal.project.estante_critica_api.model.Review;
 import com.personal.project.estante_critica_api.repository.ReviewRepository;
@@ -26,12 +26,11 @@ public class ReviewService {
 
     @Transactional
     public Review reviewBook(String bookId, Integer numberRating, String comments) {
-        var userReview = userService.getUserAutenticated();
-        if (userReview == null) {
-            throw new UserNotFoundException("Usuário não localizado, login não realizado!");
-        }
+        var userReview = userService.getUserAutenticated()
+                .orElseThrow(() -> new UserNotFoundException("Usuário não localizado, login não realizado!"));
         var bookReview = bookService.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Livro não localizado!"));
+        this.hasUserReviewForBook(bookReview.getId(), bookReview.getTitle(), userReview.getId());
         var review = this.createReview(bookReview.getId(), userReview.getId(), numberRating, comments);
         review.setCreateDate(LocalDateTime.now());
         review.setUpdateDate(LocalDateTime.now());
@@ -64,7 +63,7 @@ public class ReviewService {
         List<Review> listReview = this.listReviewByBook(bookId);
         var sumRating = listReview.stream()
                 .reduce(0, (sub, review) -> sub + review.getNumberRating(), Integer::sum);
-        var countRating = listReview.isEmpty() ? 1 : listReview.size();
+        var countRating = listReview.size() + 1;
         return (double) (sumRating + numberRating) / countRating;
     }
 
@@ -76,6 +75,13 @@ public class ReviewService {
         review.setNumberRating(numberReating);
         review.setComments(comments);
         return review;
+    }
+
+    private void hasUserReviewForBook(String bookId, String bookTitle, String userId) {
+        var exists = repository.existsByBookIdAndUserId(bookId, userId);
+        if (Boolean.TRUE.equals(exists)) {
+            throw new ReviewAlreadyExistsException(String.format("Livro %s já avaliado pelo usuário!", bookTitle));
+        }
     }
 
 
