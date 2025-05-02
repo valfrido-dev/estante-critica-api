@@ -21,7 +21,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 class ReviewServiceTest {
@@ -36,6 +37,22 @@ class ReviewServiceTest {
     @Mock
     private BookService bookService;
 
+
+    @Test
+    @DisplayName("Teste avaliar livro")
+    void testNewReviewBook() {
+        var userAutenticated = UserTestUtil.getUserResponse(1, false);
+        var book = BooksTestUtil.getBookResponse(1);
+        var reviewExpected = ReviewTestUtil.getReviewMock(book.getId(), userAutenticated.getId(), 1);
+        when(userService.getUserAutenticated()).thenReturn(Optional.of(userAutenticated));
+        when(bookService.findById(book.getId())).thenReturn(Optional.of(book));
+        when(repository.existsByBookIdAndUserId(book.getId(), userAutenticated.getId())).thenReturn(false);
+        when(repository.findByBookId(book.getId())).thenReturn(List.of());
+        when(repository.save(any())).thenReturn(reviewExpected);
+        var result = reviewService.reviewBook(book.getId(), 3, "Comments 1");
+        assertEquals("Comments 1", result.getComments());
+        verify(bookService, times(1)).saveBook(book);
+    }
 
     @Test
     @DisplayName("Teste avaliar livro - erro usuario já avaliou o livro")
