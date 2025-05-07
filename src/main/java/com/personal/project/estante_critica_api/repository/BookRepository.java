@@ -6,11 +6,11 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookRepository extends MongoRepository<Book, String> {
 
-    @Query(value="{$or :[{title: ?0}, {authors: [?1]}, {category: ?2}, {publisher: ?3}]}", sort="{numberAverageRating:-1}")
-    List<Book> findByParams(String title, String author, String category, String publisher);
+    Boolean existsByTitleAndPublisher(String title, String publisher);
 
 }

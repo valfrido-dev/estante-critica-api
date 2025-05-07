@@ -1,15 +1,13 @@
 package com.personal.project.estante_critica_api.endpoints;
 
+import com.personal.project.estante_critica_api.endpoints.dto.book.NewBookDTO;
 import com.personal.project.estante_critica_api.exceptions.ResourceNotFoundException;
 import com.personal.project.estante_critica_api.model.Book;
 import com.personal.project.estante_critica_api.service.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +51,12 @@ public class BooksController {
         }
 
         return bookPovided.get();
+    }
+
+    @PostMapping("/book/register")
+    public String registerBook(@RequestBody NewBookDTO book) {
+        var bookRegitered = service.insertBook(book);
+        return String.format("Livro %s incluído com sucesso!", bookRegitered.getTitle());
     }
 
 }

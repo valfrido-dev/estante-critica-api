@@ -15,6 +15,7 @@ public class Book {
     private String id;
 
     private String title;
+    private String subtitle;
     private List<String> authors;
     private String category;
     private String publisher;
@@ -23,5 +24,6 @@ public class Book {
     private Double numberAverageRating;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
+    private String thumbnail;
 
 }

@@ -1,5 +1,7 @@
 package com.personal.project.estante_critica_api.service;
 
+import com.personal.project.estante_critica_api.exceptions.BookAlreadyExistsException;
+import com.personal.project.estante_critica_api.exceptions.ReviewAlreadyExistsException;
 import com.personal.project.estante_critica_api.model.Book;
 import com.personal.project.estante_critica_api.repository.BookRepository;
 import com.personal.project.estante_critica_api.repository.ReviewRepository;
@@ -16,8 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -85,6 +86,27 @@ class BookServiceTest {
         var book = BooksTestUtil.getBookResponse(1);
         bookService.saveBook(book);
         verify(repository, times(1)).save(book);
+    }
+
+    @Test
+    @DisplayName("Teste incluir novo livro na base de dados")
+    void testInsertBook() {
+        var bookExpected = BooksTestUtil.getBookResponse(1);
+        var bookRegister = BooksTestUtil.getBookRegister(1);
+        when(repository.save(any())).thenReturn(bookExpected);
+        var result = bookService.insertBook(bookRegister);
+        assertEquals(bookExpected.getTitle(), result.getTitle());
+        assertEquals(bookExpected.getId(), result.getId());
+    }
+
+    @Test
+    @DisplayName("Teste incluir novo livro na base de dados - livro já está cadastrado na base de dados")
+    void testInsertBookError() {
+        var bookRegister = BooksTestUtil.getBookRegister(1);
+        when(repository.existsByTitleAndPublisher(anyString(), anyString())).thenReturn(Boolean.TRUE);
+        Exception exception = assertThrows(BookAlreadyExistsException.class,
+                () -> bookService.insertBook(bookRegister));
+        assertEquals("O livro já está cadastrado!", exception.getMessage());
     }
 
 

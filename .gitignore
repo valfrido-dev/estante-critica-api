@@ -36,6 +36,7 @@ build/
 dokcer/data/**
 dokcer/data/db/
 dokcer/data/db/**/**
+docker/.env
 
 #### Report coverage unit tests
 htmlReport/

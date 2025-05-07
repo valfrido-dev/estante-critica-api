@@ -86,4 +86,14 @@ class BooksControllerTest {
         assertEquals("Livro não localizado!", exception.getMessage());
     }
 
+    @Test
+    @DisplayName("Teste incluir novo livro na base de dados")
+    void testBookRegister() {
+        var bookExpected = BooksTestUtil.getBookResponse(1);
+        var bookRegister = BooksTestUtil.getBookRegister(1);
+        when(bookService.insertBook(bookRegister)).thenReturn(bookExpected);
+        var result = booksController.registerBook(bookRegister);
+        assertEquals("Livro Livro teste 1 incluído com sucesso!", result);
+    }
+
 }

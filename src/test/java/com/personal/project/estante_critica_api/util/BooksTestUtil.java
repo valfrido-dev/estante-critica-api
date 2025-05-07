@@ -1,5 +1,6 @@
 package com.personal.project.estante_critica_api.util;
 
+import com.personal.project.estante_critica_api.endpoints.dto.book.NewBookDTO;
 import com.personal.project.estante_critica_api.model.Book;
 
 import java.util.List;
@@ -22,6 +23,16 @@ public class BooksTestUtil {
         book.setSynopsis("Resumo teste");
         book.setNumberAverageRating(2.0);
         return book;
+    }
+
+    public static NewBookDTO getBookRegister(Integer identificadorTest) {
+        var title = String.format("Livro teste %d", identificadorTest);
+        return new NewBookDTO(title,
+                "", List.of("Autor"),
+                "teste",
+                "Autor",
+                "14/2025",
+                "resumo");
     }
 
     public static String generatedBookId() {

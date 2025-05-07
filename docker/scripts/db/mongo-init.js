@@ -11,10 +11,11 @@ console.log("collection books created!!")
 // Você pode inserir documentos iniciais, se necessário
 // Inserção de book inicial para testes no desenvolvimento da aplicação
 let insertedBooksTest = db.books.insertMany([{
-    title: "O dragão renascido Série a roda do tempo vol. 3",
+    title: "O dragão renascido",
+    subtitle: "Série a roda do tempo vol. 3",
     authors: [ "Robert Jordan" ],
     category: "fantasy",
-    publisher: "Intrínseca",
+    publisher: "Editora Intrinseca",
     publicationDate: "10/2014",
     synopsis: `
                Série de livros que deu origem à superprodução A Roda do Tempo, do Amazon Prime Video Na mitologia da série
@@ -32,6 +33,7 @@ let insertedBooksTest = db.books.insertMany([{
                em busca de Rand, na esperança de que ele aceite orientação da feiticeira.
                Fonte: Editor
                `,
+    thumbnail: "http://books.google.com/books/content?id=zZ2lBAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
     numberAverageRating: 0,
     createDate: new Date(),
     updateDate: new Date()
@@ -40,7 +42,7 @@ let insertedBooksTest = db.books.insertMany([{
         title: "O Pequeno Príncipe (coleção Clássicos Da Literatura Mundial)",
         authors: [ "Antoine De Saint-exupéry", "Jamila Mafra" ],
         category: "fantasy",
-        publisher: "Mafra Editorial",
+        publisher: "Clube de Autores",
         publicationDate: "09/2021",
         synopsis: `
                    Palavras de amor e sabedoria que cativam o coração e a alma fazem parte deste clássico que
@@ -64,6 +66,7 @@ let insertedBooksTest = db.books.insertMany([{
                    seu avião havia sido abatido por uma aeronave da alemã.
                    Fonte: Editor
                    `,
+        thumbnail: "http://books.google.com/books/content?id=1D9KEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
         numberAverageRating: 0,
         createDate: new Date(),
         updateDate: new Date()

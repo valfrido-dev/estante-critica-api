@@ -1,6 +1,8 @@
 package com.personal.project.estante_critica_api.service;
 
 
+import com.personal.project.estante_critica_api.endpoints.dto.book.NewBookDTO;
+import com.personal.project.estante_critica_api.exceptions.BookAlreadyExistsException;
 import com.personal.project.estante_critica_api.exceptions.ResourceNotFoundException;
 import com.personal.project.estante_critica_api.model.Book;
 import com.personal.project.estante_critica_api.repository.BookRepository;
@@ -11,6 +13,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,6 +63,25 @@ public class BookService {
         return repository.findById(id);
     }
 
+    @Transactional
+    public Book insertBook(NewBookDTO bookDTO) {
+        var isExists = repository.existsByTitleAndPublisher(bookDTO.title(), bookDTO.publisher());
+        if (isExists) {
+            throw new BookAlreadyExistsException("O livro já está cadastrado!");
+        }
+        var newBook = new Book();
+        newBook.setCreateDate(LocalDateTime.now());
+        newBook.setUpdateDate(newBook.getCreateDate());
+        newBook.setTitle(bookDTO.title());
+        newBook.setSubtitle(bookDTO.subtitle());
+        newBook.setAuthors(bookDTO.authors());
+        newBook.setPublisher(bookDTO.publisher());
+        newBook.setPublicationDate(bookDTO.publicationDate());
+        newBook.setCategory(bookDTO.category());
+        newBook.setSynopsis(bookDTO.synopsis());
+        newBook.setNumberAverageRating(0.0);
+        return repository.save(newBook);
+    }
     public void saveBook(Book book) {
         book.setUpdateDate(LocalDateTime.now());
         repository.save(book);

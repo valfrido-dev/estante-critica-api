@@ -22,6 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private static final String ADMIN = "ADMIN";
+
     private final UserDetailsService userDetailsService;
     private final JwtUtilService jwtUtilService;
 
@@ -37,8 +39,9 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.POST,"/users/user/login").permitAll()
                         .requestMatchers(HttpMethod.POST,"/users/user/register").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/users/user/admin/apply").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET,"/users/list").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/users/user/admin/apply").hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.GET,"/users/list").hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.POST,"/books/book/register").hasRole(ADMIN)
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();

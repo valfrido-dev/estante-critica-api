@@ -11,8 +11,8 @@ services:
     image: mongodb/mongodb-community-server:6.0.14-ubi9
     container_name: mongodb_container
     environment:
-      - MONGODB_INITDB_ROOT_USERNAME=user
-      - MONGODB_INITDB_ROOT_PASSWORD=pass
+      - MONGODB_INITDB_ROOT_USERNAME=${MONGODB_ROOT_USERNAME}
+      - MONGODB_INITDB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
 #      - CONN_STR=mongodb://user:pass@mongodb
 #      - MONGODB_INITDB_DATABASE=estantedb
     networks:

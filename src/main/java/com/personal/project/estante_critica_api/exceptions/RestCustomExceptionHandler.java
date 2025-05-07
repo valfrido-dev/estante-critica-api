@@ -39,7 +39,8 @@ public class RestCustomExceptionHandler {
 
     @ExceptionHandler({
         UserAlreadyExistsException.class,
-        ReviewAlreadyExistsException.class
+        ReviewAlreadyExistsException.class,
+        BookAlreadyExistsException.class
     })
     public ResponseEntity<ApiErrorResponse> entityExistsException(RuntimeException ex) {
         ApiErrorResponse apiError = new ApiErrorResponse(
