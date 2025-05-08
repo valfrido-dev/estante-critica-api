@@ -1,24 +1,35 @@
 #version: '3'
 services:
-  #estanteCriticaApi:
-    #image: mongodb/mongodb-community-server:6.0.14-ubi9
-    #environment:
-    #  - CONN_STR=mongodb://user:pass@mongodb
-    #command: '/bin/bash -c "sleep 5; mongosh $$CONN_STR --eval \"show dbs;\""'
-    #depends_on:
-     # - mongodb
+  estanteCriticaApi:
+    image: estante-critica-api
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - 8080:8080
+    networks:
+      - db_network
+    environment:
+      - SPRING_DATA_MONGODB_URI=${MONGODB_URI}
+      - API_SECURITY_TOKEN_SECRET=${JWT_SECRET_API}
+      #      - SERVER_SERVLET_CONTEXT_PATH=/api
+      - LOGGING_LEVEL_ORG_MONGODB_DRIVER=DEBUG
+    depends_on:
+      - mongodb
   mongodb:
     image: mongodb/mongodb-community-server:6.0.14-ubi9
     container_name: mongodb_container
     environment:
       - MONGODB_INITDB_ROOT_USERNAME=${MONGODB_ROOT_USERNAME}
       - MONGODB_INITDB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
-#      - CONN_STR=mongodb://user:pass@mongodb
-#      - MONGODB_INITDB_DATABASE=estantedb
+    #      - CONN_STR=mongodb://user:pass@mongodb
+    #      - MONGODB_INITDB_DATABASE=estantedb
     networks:
       - db_network
     ports:
       - 27017:27017
+    expose:
+      - 27017
     volumes:
       - type: bind
         source: ./data/db
