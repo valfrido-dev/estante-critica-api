@@ -36,8 +36,10 @@ public class UserController {
         var usernamePassword =
                 new UsernamePasswordAuthenticationToken(userAuthentication.username(), userAuthentication.password());
         var auth = authenticationManager.authenticate(usernamePassword);
-        var token = jwtUtilService.generateToken((UserDetails) auth.getPrincipal());
-        return new ResponseAutenticatorDTO(token);
+        var userAutenticated = (User) auth.getPrincipal();
+        var token = jwtUtilService.generateToken(userAutenticated);
+        return new ResponseAutenticatorDTO(token, userAutenticated.getUsername(),
+                userAutenticated.getName(), userAutenticated.getAdmin());
     }
 
     @GetMapping("/list")
