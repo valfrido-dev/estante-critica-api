@@ -1,10 +1,8 @@
 package com.personal.project.estante_critica_api.service;
 
 import com.personal.project.estante_critica_api.exceptions.BookAlreadyExistsException;
-import com.personal.project.estante_critica_api.exceptions.ReviewAlreadyExistsException;
 import com.personal.project.estante_critica_api.model.Book;
 import com.personal.project.estante_critica_api.repository.BookRepository;
-import com.personal.project.estante_critica_api.repository.ReviewRepository;
 import com.personal.project.estante_critica_api.util.BooksTestUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

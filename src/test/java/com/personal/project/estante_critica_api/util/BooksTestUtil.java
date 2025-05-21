@@ -32,6 +32,7 @@ public class BooksTestUtil {
                 "teste",
                 "Autor",
                 "14/2025",
+                "link para a imagem do livro thumbnail",
                 "resumo");
     }
 

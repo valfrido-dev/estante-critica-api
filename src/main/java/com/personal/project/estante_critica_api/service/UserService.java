@@ -61,6 +61,11 @@ public class UserService implements UserDetailsService {
         return repository.save(user);
     }
 
+    @Transactional
+    public User saveUser(User user) {
+        return repository.save(user);
+    }
+
     public Optional<User> getUserAutenticated() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if ( auth != null ) {

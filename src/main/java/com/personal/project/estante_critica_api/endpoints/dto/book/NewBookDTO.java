@@ -20,6 +20,9 @@ public record NewBookDTO(
         String publisher,
         @NotBlank
         String publicationDate,
+
+        @DefaultValue(value = "")
+        String thumbnail,
         @DefaultValue(value = "")
         @Size(max = 500)
         String synopsis) {

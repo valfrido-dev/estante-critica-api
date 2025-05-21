@@ -49,7 +49,10 @@ public class RestCustomExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(UserValidationException.class)
+    @ExceptionHandler({
+        UserValidationException.class,
+        LibrarySizeException.class
+    })
     public ResponseEntity<ApiErrorResponse> requestNotValidException(RuntimeException ex) {
         ApiErrorResponse apiError = new ApiErrorResponse(
                 LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(),

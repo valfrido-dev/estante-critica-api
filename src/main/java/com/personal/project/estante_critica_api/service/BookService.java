@@ -1,13 +1,14 @@
 package com.personal.project.estante_critica_api.service;
 
 
+import com.personal.project.estante_critica_api.consumer.service.ApiGoogleBooksConsumerService;
 import com.personal.project.estante_critica_api.endpoints.dto.book.NewBookDTO;
 import com.personal.project.estante_critica_api.exceptions.BookAlreadyExistsException;
-import com.personal.project.estante_critica_api.exceptions.ResourceNotFoundException;
 import com.personal.project.estante_critica_api.model.Book;
 import com.personal.project.estante_critica_api.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -27,6 +28,7 @@ public class BookService {
 
     private final BookRepository repository;
     private final MongoTemplate mongoTemplate;
+    private final ApiGoogleBooksConsumerService googleBooksApiService;
 
     public List<Book> listBooks() {
 
@@ -63,10 +65,14 @@ public class BookService {
         return repository.findById(id);
     }
 
+    public List<Book> findByIds(List<String> listIds) {
+        return repository.findAllById(listIds);
+    }
+
     @Transactional
     public Book insertBook(NewBookDTO bookDTO) {
         var isExists = repository.existsByTitleAndPublisher(bookDTO.title(), bookDTO.publisher());
-        if (isExists) {
+        if (Boolean.TRUE.equals(isExists)) {
             throw new BookAlreadyExistsException("O livro já está cadastrado!");
         }
         var newBook = new Book();
@@ -80,6 +86,8 @@ public class BookService {
         newBook.setCategory(bookDTO.category());
         newBook.setSynopsis(bookDTO.synopsis());
         newBook.setNumberAverageRating(0.0);
+        newBook.setThumbnail(this.getThumbnailInGoogleBooks(bookDTO));
+        log.info("thumbnail {}", newBook.getThumbnail());
         return repository.save(newBook);
     }
     public void saveBook(Book book) {
@@ -89,6 +97,13 @@ public class BookService {
 
     private Sort getSortedAverageRatingDesc() {
        return Sort.by(Sort.Direction.DESC, "numberAverageRating");
+    }
+
+    private String getThumbnailInGoogleBooks(NewBookDTO bookDTO) {
+        if ( bookDTO.thumbnail() == null || bookDTO.thumbnail().isBlank() ) {
+            return googleBooksApiService.getApiResponse(bookDTO.title(), bookDTO.publisher());
+        }
+        return bookDTO.thumbnail();
     }
 
 }
