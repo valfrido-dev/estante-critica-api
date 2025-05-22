@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("library")
+@RequestMapping("/library")
 @RequiredArgsConstructor
 @Slf4j
 public class LibraryUserController {
@@ -22,16 +22,23 @@ public class LibraryUserController {
     public List<Book> listLibrary() {
         return service.listLibrary();
     }
+
+    @PostMapping("/user/hasBook")
+    public BookLibraryDTO verifyBookInLibrary(@RequestBody @Valid BookLibraryDTO bookSelected) {
+        var hasBookInLibrary = service.verifyBookInLibrary(bookSelected.bookId());
+        return new BookLibraryDTO(bookSelected.bookId(), bookSelected.bookTitle(), hasBookInLibrary);
+    }
+
     @PostMapping("/user/book/add")
-    public String addBookLibraryPersonal(@RequestBody @Valid BookLibraryDTO bookSelected) {
+    public BookLibraryDTO addBookLibraryPersonal(@RequestBody @Valid BookLibraryDTO bookSelected) {
         var book = service.addBookInLibrary(bookSelected.bookId());
-        return String.format("Livro %s adicionado a lista de interesse!", book.getTitle());
+        return new BookLibraryDTO(book.getId(), book.getTitle(), Boolean.TRUE);
     }
 
     @PostMapping("/user/book/remove")
-    public String removeBookLibraryPersonal(@RequestBody @Valid BookLibraryDTO bookSelected) {
+    public BookLibraryDTO removeBookLibraryPersonal(@RequestBody @Valid BookLibraryDTO bookSelected) {
         service.removeBookInLibrary(bookSelected.bookId());
-        return "Livro %s removido da lista de interesse!";
+        return new BookLibraryDTO(bookSelected.bookId(), bookSelected.bookTitle(), Boolean.FALSE);
     }
 
 }

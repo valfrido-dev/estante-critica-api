@@ -19,19 +19,21 @@ import java.util.List;
 @Slf4j
 public class LibraryUserService {
 
+    private static final String MESSAGE_NOT_AUTENTICATED = "Login não realizado!";
+
     private final BookService bookService;
     private final UserService userService;
 
     public List<Book> listLibrary() {
         var userAutenticated = userService.getUserAutenticated()
-                .orElseThrow(() -> new UserNotFoundException("Usuário não localizado, login não realizado!"));
+                .orElseThrow(() -> new UserNotFoundException(MESSAGE_NOT_AUTENTICATED));
         return this.bookService.findByIds(userAutenticated.getBooks());
     }
 
     @Transactional
     public Book addBookInLibrary(String bookId) {
         var userAutenticated = userService.getUserAutenticated()
-                .orElseThrow(() -> new UserNotFoundException("Usuário não localizado, login não realizado!"));
+                .orElseThrow(() -> new UserNotFoundException(MESSAGE_NOT_AUTENTICATED));
         var book = bookService.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Livro não localizado!"));
         this.valid(userAutenticated, book);
@@ -43,9 +45,15 @@ public class LibraryUserService {
     @Transactional
     public void removeBookInLibrary(String bookId) {
         var userAutenticated = userService.getUserAutenticated()
-                .orElseThrow(() -> new UserNotFoundException("Usuário não localizado, login não realizado!"));
+                .orElseThrow(() -> new UserNotFoundException(MESSAGE_NOT_AUTENTICATED));
         this.removeBookOnUser(userAutenticated, bookId);
         this.userService.saveUser(userAutenticated);
+    }
+
+    public Boolean verifyBookInLibrary(String bookId) {
+        var userAutenticated = userService.getUserAutenticated()
+                .orElseThrow(() -> new UserNotFoundException(MESSAGE_NOT_AUTENTICATED));
+        return this.hasBookInLibrary(userAutenticated, bookId);
     }
 
     private void valid(User user, Book book) {
@@ -53,14 +61,17 @@ public class LibraryUserService {
             throw new LibrarySizeException("A lista de livros de interesse já está cheia!");
         }
 
-        if (user.getBooks() != null && user.getBooks().stream().anyMatch(id -> this.hasBookInLibrary(id, book))) {
+        if (user.getBooks() != null && this.hasBookInLibrary(user, book.getId())) {
             throw new BookAlreadyExistsException("Livro já está na lista de interesse!");
         }
-
     }
 
-    private boolean hasBookInLibrary(String bookId, Book book) {
-        return bookId.matches(book.getId());
+    private boolean hasBookInLibrary(User user, String bookId) {
+        return user.getBooks().stream().anyMatch(id -> this.isEqualsBookId(id, bookId));
+    }
+
+    private boolean isEqualsBookId(String idBookLibrary, String bookId) {
+        return idBookLibrary.matches(bookId);
     }
 
     private void addBooksOnUser(User userAuth, Book book) {

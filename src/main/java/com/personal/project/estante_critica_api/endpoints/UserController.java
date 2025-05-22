@@ -24,9 +24,10 @@ public class UserController {
     private final JwtUtilService jwtUtilService;
 
     @PostMapping("/user/register")
-    public String newUser(@RequestBody @Valid NewUserDTO newUser) {
+    public UserDTO newUser(@RequestBody @Valid NewUserDTO newUser) {
         User user = service.registerNewUser(newUser);
-        return String.format("Usuário incluído com sucesso! Bem vindo: %s!", user.getName());
+        return new UserDTO(user.getId(), user.getUsername(), user.getName(), user.getEmail(),
+                user.getAdmin(), user.getBooks(), user.getCreateDate(), user.getUpdateDate());
     }
 
     @PostMapping("/user/login")

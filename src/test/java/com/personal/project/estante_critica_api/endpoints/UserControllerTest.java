@@ -34,12 +34,10 @@ class UserControllerTest {
     void testNewUserRegister() {
         var requisicao = UserTestUtil.getNewUserRequisicao(1);
         var userRegistered = UserTestUtil.getUserResponse(1, false);
-        var responseExpected = String.format(
-                "Usuário incluído com sucesso! Bem vindo: %s!", userRegistered.getName());
         when(userService.registerNewUser(requisicao)).thenReturn(userRegistered);
         var response = userController.newUser(requisicao);
-        assertEquals(responseExpected, response);
-        assertTrue(response.contains(userRegistered.getName()));
+        assertEquals(userRegistered.getUsername(), response.username());
+        assertFalse(response.admin());
     }
 
     @Test

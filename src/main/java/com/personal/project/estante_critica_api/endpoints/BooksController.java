@@ -54,9 +54,8 @@ public class BooksController {
     }
 
     @PostMapping("/book/register")
-    public String registerBook(@RequestBody NewBookDTO book) {
-        var bookRegitered = service.insertBook(book);
-        return String.format("Livro %s incluído com sucesso!", bookRegitered.getTitle());
+    public Book registerBook(@RequestBody NewBookDTO book) {
+       return service.insertBook(book);
     }
 
 }

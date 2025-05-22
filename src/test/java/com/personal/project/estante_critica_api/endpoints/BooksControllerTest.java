@@ -93,7 +93,7 @@ class BooksControllerTest {
         var bookRegister = BooksTestUtil.getBookRegister(1);
         when(bookService.insertBook(bookRegister)).thenReturn(bookExpected);
         var result = booksController.registerBook(bookRegister);
-        assertEquals("Livro Livro teste 1 incluído com sucesso!", result);
+        assertEquals(bookRegister.title(), result.getTitle());
     }
 
 }
