@@ -1,15 +1,10 @@
 package com.personal.project.estante_critica_api.initializer;
 
 import com.personal.project.estante_critica_api.endpoints.dto.user.NewUserDTO;
-import com.personal.project.estante_critica_api.model.User;
 import com.personal.project.estante_critica_api.service.UserService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.env.Environment;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
