@@ -37,6 +37,8 @@ JWT_SECRET_API: <your-secret-key>
 MONGODB_ROOT_USERNAME: <your-user-db>
 MONGODB_ROOT_PASSWORD: <your-password-user-db>
 MONGODB_URI: mongodb://<your-user-db>:<your-password-user-db>@mongodb:27017/estantedb?authSource=admin
+ADMIN_APP_PASSWORD: <your-admin-default-password>
+EMAIL_ADMIN_APP: <your-admin-default-email>
 ```
 - Executar os comandos abaixo no diretório `<docker>`
 
@@ -57,3 +59,4 @@ Ou utilizar uma ferramenta de testes de API para interagir com o projeto, como o
 os restantes dos endpoints nessicitando de autenticação.
 - A autentição é realizada através do endpoint `</api/users/user/login>` informando usuário e senha,
 a autenticação retorna o token de autorização.
+- O usuário administrador padrão é o adminApp, com senha definida na variável de ambiente `<ADMIN_APP_PASSWORD>`

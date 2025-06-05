@@ -74,6 +74,22 @@ public class UserService implements UserDetailsService {
         return Optional.empty();
     }
 
+    public Boolean existUserByUsername(String username) {
+        return repository.existsByUsername(username);
+    }
+
+    @Transactional
+    public User registerUserDefault(NewUserDTO user, Boolean isAdmin) {
+        validatorsDTO.forEach(v -> v.validator(user));
+        String encriptedPass = this.encryptPassword(user.password());
+        User newUser = new User(user.username(), user.name(), user.email(), encriptedPass);
+        newUser.setCreateDate(LocalDateTime.now());
+        newUser.setUpdateDate(LocalDateTime.now());
+        newUser.setAdmin(isAdmin);
+        newUser.setBooks(Collections.emptyList());
+        return repository.save(newUser);
+    }
+
     public Optional<User> getUsrById(String userId) {
         return repository.findById(userId);
     }
